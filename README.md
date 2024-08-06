@@ -1,10 +1,9 @@
-# pi-gen
+# replay-gen
 
-Tool used to create Raspberry Pi OS images, and custom images based on Raspberry Pi OS,
+Tool used to create RePlay OS images, and custom images based on RePlay OS,
 which was in turn derived from the Raspbian project.
 
-**Note**: Raspberry Pi OS 32 bit images are based primarily on Raspbian, while
-Raspberry Pi OS 64 bit images are based primarily on Debian.
+**Note**: RePlay 64 bit images are based primarily on Debian.
 
 ## Dependencies
 
@@ -205,10 +204,10 @@ The following environment variables are supported:
 
     If set, then instead of working through the numeric stages in order, this list will be followed. For example setting to `"stage0 stage1 mystage stage2"` will run the contents of `mystage` before stage2. Note that quotes are needed around the list. An absolute or relative path can be given for stages outside the pi-gen directory.
 
-A simple example for building Raspberry Pi OS:
+A simple example for building RePlay OS:
 
 ```bash
-IMG_NAME='raspios'
+IMG_NAME='replayos'
 ```
 
 The config file can also be specified on the command line as an argument the `build.sh` or `build-docker.sh` scripts.
@@ -444,3 +443,19 @@ To resolve this, ensure that the following files are available (install them if 
 You may also need to load the module by hand - run `modprobe binfmt_misc`.
 
 If you are using WSL to build you may have to enable the service `sudo update-binfmts --enable`
+
+# NOTES
+
+## Plymouth configuration
+https://wiki.archlinux.org/title/plymouth
+
+Install: `sudo apt install plymouth plymouth-themes`
+Themes path: `ls /usr/share/plymouth/themes`
+Check installed themes: `sudo plymouth-set-default-theme --list`
+Check selected theme: `sudo plymouth-set-default-theme`
+Select new theme: `sudo plymouth-set-default-theme -R replay`
+Test theme:
+            `sudo plymouthd`
+            `sudo plymouth --show-splash`
+            `sudo plymouth quit`
+Add to cmdline.txt to enable and hide cursor: `splash quiet plymouth.ignore-serial-consoles vt.global_cursor_default=0`

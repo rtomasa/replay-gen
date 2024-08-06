@@ -1,0 +1,132 @@
+RePlay OS
+=========
+
+# Configuration steps after first boot
+
+1. Poweroff and resize the ext4 root partition to 4GB from desktop PC
+
+2. First time SSH login
+    User     : replay
+    Password : replayos
+
+3. Enable Root User
+`sudo passwd root`
+Password : replayos
+
+4. Configure SSH for Root Login and Default Path
+`sudo nano /etc/ssh/sshd_config`
+Change `#PermitRootLogin prohibit-password` to `PermitRootLogin yes`
+Change `Subsystem       sftp    /usr/lib/openssh/sftp-server` to `Subsystem       sftp    /usr/lib/openssh/sftp-server -d /media`
+`sudo reboot` and use root for next logins
+
+5. Remove User (replay)
+`deluser --remove-home replay`
+
+6. Clean Boot
+Remove journal boot messages: `nano /etc/systemd/journald.conf` set `Storage=none`
+Remove boot messages: `rm /etc/systemd/system/getty@tty1.service.d/noclear.conf`
+Remove welcome message: `touch ~/.hushlogin`
+Remove linux version info: `echo "" > /etc/issue`
+Remove the message of the day: `echo "" > /etc/motd`
+Remove Kernel messages: `nano /etc/rc.local` comment out the IP print and add this before `exit 0`: `dmesg --console-off`
+Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 loglevel=0 quiet rootwait fastboot cfg80211.ieee80211_regdom=ES" > /boot/firmware/cmdline.txt`
+`reboot`
+
+7. Remove AppArmor
+`systemctl stop apparmor`
+`systemctl disable apparmor`
+`apt-get remove --purge apparmor`
+`rm -rf /etc/apparmor.d/`
+
+8. Remove rsync
+`apt-get remove --purge rsyn`
+
+9. Remove sudo
+`apt-get remove --purge sudo`
+
+10. Remove triggerhappy
+`systemctl stop triggerhappy`
+`systemctl disable triggerhappy`
+`apt-get remove --purge triggerhappy`
+
+11. Remove raspi-config
+`service raspi-config stop`
+`update-rc.d raspi-config remove`
+`apt-get remove --purge raspi-config`
+
+12. Disable NetworkManager-wait-online
+`systemctl stop NetworkManager-wait-online.service`
+`systemctl disable NetworkManager-wait-online.service`
+`systemctl mask NetworkManager-wait-online.service`
+
+13. Disable e2scrub_reap.service
+`systemctl stop e2scrub_reap.service`
+`systemctl disable e2scrub_reap.service`
+`systemctl mask e2scrub_reap.service`
+`systemctl stop e2scrub_all.timer`
+`systemctl disable e2scrub_all.timer`
+`systemctl mask e2scrub_all.timer`
+
+14. Remove udisks2.service
+`systemctl stop udisks2.service`
+`systemctl disable udisks2.service`
+`apt-get remove --purge udisks2`
+
+15. Create mount points
+`mkdir /media/sd`
+`mkdir /media/usb`
+`mkdir /media/nfs`
+
+16. Build and install GunGon2 driver
+17. Build and install Tatito T&P driver
+
+18. Install create-fat-partition service
+`cp create-fat-partition.sh /etc/init.d/create-fat-partition.sh`
+`update-rc.d create-fat-partition.sh defaults`
+
+19. Copy replay service
+`cp replay.sh /etc/init.d/replay.sh`
+
+20. Copy replay folder to /opt
+
+==================
+MISC COMMAND NOTES
+==================
+
+update-rc.d create-fat-partition.sh defaults
+update-rc.d create-fat-partition.sh remove
+Check partition sectors: fdisk -l /dev/mmcblk0
+
+===============================
+REMOVE FREE SPACE FROM IMG FILE
+===============================
+
+This process will remove the unallocated space from your image file, resulting in a smaller and more efficient image.
+
+# Mount the Image File
+`sudo losetup -f --show replay_0360.img`
+Output: /dev/loop27
+
+# Examine the Partitions
+`sudo parted /dev/loop27 print`
+Output indicates the last partition ends at 4541MB.
+
+# Unmount the Loop Device
+`sudo losetup -d /dev/loop27`
+
+# Truncate the Image File
+`truncate --size=4541MB replay_0360.img`
+
+# Compress
+`xz -k replay_0360.img`
+
+================
+COMMANDS & STATS
+================
+
+Analyze systemd boot times
+    systemd-analyze
+    systemd-analyze critical-chain
+    systemd-analyze blame
+
+    

@@ -1,0 +1,40 @@
+#!/bin/sh
+
+case "$1" in
+    start)
+        echo "Resizing FAT partition..."
+        set +e
+        
+	# Determine the partition to resize
+	DEVICE="/dev/mmcblk0"
+	PARTITION_NUM="3"
+	PARTITION="${DEVICE}p${PARTITION_NUM}"  # Assuming the third partition is the one to resize
+	MOUNT_POINT="/media/fat"
+
+	# Unmount the partition if it's mounted
+	mkdir $MOUNT_POINT
+
+	# Create the partition
+	echo "Creating the partition using fdisk..."
+	echo -e "n\np\n${PARTITION_NUM}\n\n\nt\n3\nc\nw" | fdisk $DEVICE
+
+	# Resize filesystem
+	mkfs.vfat -F 32 -n "replay" $PARTITION
+	
+	# Remove the script after execution to prevent it from running again
+        rm /etc/init.d/S03create_fat_partition
+
+	# Reboot the system
+	echo "Rebooting system to apply partition changes..."
+	reboot
+        ;;
+    stop)
+        # No-op
+        ;;
+    *)
+        echo "Usage: $0 {start|stop}"
+        exit 1
+        ;;
+esac
+
+exit 0

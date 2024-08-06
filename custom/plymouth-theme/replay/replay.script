@@ -1,0 +1,56 @@
+#Basic Plymouth Theme
+
+#-------------------------Window Settings-------------------------
+
+Window.SetBackgroundTopColor (0, 0, 0);     # Nice colour on top of the screen fading to
+Window.SetBackgroundBottomColor (0, 0, 0);  # an equally nice colour on the bottom
+
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+#------------------------------Logo-------------------------------
+
+#initiate logo sprite
+logo_filename = "empty.png";
+logo_image = Image (logo_filename);
+logo_sprite = Sprite (logo_image);
+
+logo_sprite.SetX(screen_width / 2 - logo_image.GetWidth() / 2); # Place in the centre 
+logo_sprite.SetY(screen_height / 2 - logo_image.GetHeight() / 2);
+logo_sprite.SetZ(-10000); # Place right at the front
+
+#----------------------------------------- Dialogue --------------------------------
+
+status = "normal";
+
+fun dialog_setup()
+{
+}
+
+fun display_normal_callback ()
+{
+}
+
+fun display_password_callback (prompt, bullets)
+{
+}
+
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+
+
+#----------------------------------------- Quit --------------------------------
+
+fun quit_callback ()
+{
+}
+
+Plymouth.SetQuitFunction(quit_callback);
+
+#----------------------------------------- Message --------------------------------
+
+fun message_callback (text)
+{
+}
+
+Plymouth.SetMessageFunction(message_callback);
