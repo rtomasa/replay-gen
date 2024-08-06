@@ -89,44 +89,36 @@ Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@6
 
 20. Copy replay folder to /opt
 
-==================
-MISC COMMAND NOTES
-==================
+# MISC COMMAND NOTES
 
 update-rc.d create-fat-partition.sh defaults
 update-rc.d create-fat-partition.sh remove
 Check partition sectors: fdisk -l /dev/mmcblk0
 
-===============================
-REMOVE FREE SPACE FROM IMG FILE
-===============================
+# HOW TO REMOVE FREE SPACE FROM IMG FILE
 
 This process will remove the unallocated space from your image file, resulting in a smaller and more efficient image.
 
-# Mount the Image File
+## Mount the Image File
 `sudo losetup -f --show replay_0360.img`
 Output: /dev/loop27
 
-# Examine the Partitions
+## Examine the Partitions
 `sudo parted /dev/loop27 print`
 Output indicates the last partition ends at 4541MB.
 
-# Unmount the Loop Device
+## Unmount the Loop Device
 `sudo losetup -d /dev/loop27`
 
-# Truncate the Image File
+## Truncate the Image File
 `truncate --size=4541MB replay_0360.img`
 
-# Compress
+## Compress
 `xz -k replay_0360.img`
 
-================
-COMMANDS & STATS
-================
-
-Analyze systemd boot times
-    systemd-analyze
-    systemd-analyze critical-chain
-    systemd-analyze blame
-
-    
+# ANALYZE SYSTEMD BOOT TIMES
+```
+systemd-analyze
+systemd-analyze critical-chain
+systemd-analyze blame
+```
