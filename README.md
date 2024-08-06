@@ -3,8 +3,8 @@
 Tool used to create RePlay OS images, and custom images based on RePlay OS,
 which was in turn derived from the Raspbian project.
 
-**Note**: RePlay 64 bit images are based primarily on Debian.
-**Note 2**: please read *howto_install.md* to check manual custom steps performed for the final image.
+**Note**: RePlay 64 bit images are based primarily on Debian.</br>
+**Note 2**: please read *howto_install.md* to check manual custom steps performed for the final image.</br>
 **Note 3**: custom folder contains custom system files referenced in *howto_install.md* and some of the replay _extra scripts
 
 ## Dependencies
