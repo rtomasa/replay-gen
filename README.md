@@ -4,6 +4,8 @@ Tool used to create RePlay OS images, and custom images based on RePlay OS,
 which was in turn derived from the Raspbian project.
 
 **Note**: RePlay 64 bit images are based primarily on Debian.
+**Note 2**: please read *howto_install.md* to check manual custom steps performed for the final image.
+**Note 3**: custom folder contains custom system files referenced in *howto_install.md* and some of the replay _extra scripts
 
 ## Dependencies
 
@@ -443,19 +445,3 @@ To resolve this, ensure that the following files are available (install them if 
 You may also need to load the module by hand - run `modprobe binfmt_misc`.
 
 If you are using WSL to build you may have to enable the service `sudo update-binfmts --enable`
-
-# NOTES
-
-## Plymouth configuration
-https://wiki.archlinux.org/title/plymouth
-
-Install: `sudo apt install plymouth plymouth-themes`
-Themes path: `ls /usr/share/plymouth/themes`
-Check installed themes: `sudo plymouth-set-default-theme --list`
-Check selected theme: `sudo plymouth-set-default-theme`
-Select new theme: `sudo plymouth-set-default-theme -R replay`
-Test theme:
-            `sudo plymouthd`
-            `sudo plymouth --show-splash`
-            `sudo plymouth quit`
-Add to cmdline.txt to enable and hide cursor: `splash quiet plymouth.ignore-serial-consoles vt.global_cursor_default=0`
