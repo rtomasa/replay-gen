@@ -25,12 +25,6 @@ arm_64bit=1
 # Disable compensation for displays with overscan
 disable_overscan=1
 
-[cm4]
-# Enable host mode on the 2711 built-in XHCI USB controller.
-# This line should be removed if the legacy DWC2 controller is required
-# (e.g. for USB device mode) or if USB support is not required.
-otg_mode=1
-
 [pi3]
 # Default is 1200
 arm_freq=1300
@@ -43,9 +37,15 @@ arm_freq=1500
 # Default is 1500 or 1800 depending on the revision
 arm_freq=1800
 
+[cm4]
+# Enable host mode on the 2711 built-in XHCI USB controller.
+# This line should be removed if the legacy DWC2 controller is required
+# (e.g. for USB device mode) or if USB support is not required.
+otg_mode=1
+
 [pi5]
 # Default is 2400
-arm_freq=2900
+arm_freq=2800
 
 [all]
 dtoverlay=disable-bt
