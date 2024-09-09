@@ -1,7 +1,8 @@
 RePlay OS
 =========
 
-# Configuration steps after first boot
+Configuration steps after first boot
+====================================
 
 1. Poweroff and resize the ext4 root partition to 4GB from desktop PC
 
@@ -29,7 +30,7 @@ Remove welcome message: `touch ~/.hushlogin`
 Remove linux version info: `echo "" > /etc/issue`
 Remove the message of the day: `echo "" > /etc/motd`
 Remove Kernel messages: `nano /etc/rc.local` comment out the IP print and add this before `exit 0`: `dmesg --console-off`
-Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 loglevel=0 quiet rootwait fastboot cfg80211.ieee80211_regdom=ES" > /boot/firmware/cmdline.txt`
+Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 loglevel=0 quiet rootwait fastboot cfg80211.ieee80211_regdom=ES usbhid.quirks=0x0ae4:0x0701:0x0004 usbhid.jspoll=1" > /boot/firmware/cmdline.txt`
 `reboot`
 
 7. Remove AppArmor
@@ -89,34 +90,41 @@ Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@6
 
 20. Copy replay folder to /opt
 
-# MISC COMMAND NOTES
+21. Clear history
+`history -c`
+`cat /dev/null > ~/.bash_history && history -c && exit`
+
+MISC COMMAND NOTES
+==================
 
 update-rc.d create-fat-partition.sh defaults
 update-rc.d create-fat-partition.sh remove
 Check partition sectors: fdisk -l /dev/mmcblk0
 
-# HOW TO REMOVE FREE SPACE FROM IMG FILE
+HOW TO REMOVE FREE SPACE FROM IMG FILE
+======================================
 
 This process will remove the unallocated space from your image file, resulting in a smaller and more efficient image.
 
 ## Mount the Image File
-`sudo losetup -f --show replay_0360.img`
-Output: /dev/loop27
+`sudo losetup -f --show replay_0370.img`
+Output: /dev/loop29
 
 ## Examine the Partitions
-`sudo parted /dev/loop27 print`
+`sudo parted /dev/loop29 print`
 Output indicates the last partition ends at 4541MB.
 
 ## Unmount the Loop Device
-`sudo losetup -d /dev/loop27`
+`sudo losetup -d /dev/loop29`
 
 ## Truncate the Image File
-`truncate --size=4541MB replay_0360.img`
+`truncate --size=4541MB replay_0370.img`
 
 ## Compress
-`xz -k replay_0360.img`
+`xz -k replay_0370.img`
 
-# ANALYZE SYSTEMD BOOT TIMES
+ANALYZE SYSTEMD BOOT TIMES
+==========================
 ```
 systemd-analyze
 systemd-analyze critical-chain
