@@ -11,15 +11,26 @@
 
 case "$1" in
     start)
-    	if [ -f /media/sd/replay ]; then
+        if [ -f /media/sd/replay ]; then
             mv -f /media/sd/replay /opt/replay
         fi
         cd /opt/replay || exit 1
-	/opt/replay/replay
+
+        # Autoreload on crash
+        while true; do
+            RETVAL=$?
+            if [ $RETVAL -ne 0 ]; then
+                sleep 2  # Optional: Add a delay before restarting
+            else
+                break
+            fi
+        done
         ;;
+    
     stop)
-        # No-op
+        # No-op, but you can add a kill command to stop the process if necessary
         ;;
+    
     *)
         echo "Usage: $0 {start|stop}"
         exit 1
