@@ -18,6 +18,7 @@ case "$1" in
 
         # Autoreload on crash
         while true; do
+            /opt/replay/replay
             RETVAL=$?
             if [ $RETVAL -ne 0 ]; then
                 sleep 2  # Optional: Add a delay before restarting
