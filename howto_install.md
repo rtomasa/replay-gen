@@ -73,24 +73,28 @@ Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@6
 `systemctl disable udisks2.service`
 `apt-get remove --purge udisks2`
 
-15. Create mount points
+15. Remove getty
+`systemctl stop getty@tty1.service`
+`systemctl disable getty@tty1.service`
+
+16. Create mount points
 `mkdir /media/sd`
 `mkdir /media/usb`
 `mkdir /media/nfs`
 
-16. Build and install GunGon2 driver
-17. Build and install Tatito T&P driver
+17. Build and install GunGon2 driver
+18. Build and install Tatito T&P driver
 
-18. Install create-fat-partition service
+19. Install create-fat-partition service
 `cp create-fat-partition.sh /etc/init.d/create-fat-partition.sh`
 `update-rc.d create-fat-partition.sh defaults`
 
-19. Copy replay service
+20. Copy replay service
 `cp replay.sh /etc/init.d/replay.sh`
 
-20. Copy replay folder to /opt
+21. Copy replay folder to /opt
 
-21. Clear history
+22. Clear history
 `history -c`
 `cat /dev/null > ~/.bash_history && history -c && exit`
 
