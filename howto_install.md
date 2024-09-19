@@ -96,41 +96,52 @@ Update cmdline.txt: `echo "video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@6
 
 22. Clear history
 `history -c`
-`cat /dev/null > ~/.bash_history && history -c && exit`
+`cat /dev/null > ~/.bash_history && history -c && poweroff`
 
-MISC COMMAND NOTES
-==================
+DEVELOP AND CREATE NEW SYSTEM IMAGE
+===================================
 
-update-rc.d create-fat-partition.sh defaults
-update-rc.d create-fat-partition.sh remove
-Check partition sectors: fdisk -l /dev/mmcblk0
+# Development phase
 
-HOW TO REMOVE FREE SPACE FROM IMG FILE
-======================================
+1. Write latest image into SD.
+2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD bebore first boot.
+3. Boot the system and restore back the original partition script name `/etc/init.d/create-fat-partition.sh`.
+4. Disable the partiton service while doing development `update-rc.d create-fat-partition.sh remove`.
+5. Make any required change, development, installation, etc. as needed.
 
-This process will remove the unallocated space from your image file, resulting in a smaller and more efficient image.
+# New image creation phase
+
+1. Make release compilation of the frontend and clean all development files.
+2. Enable the partiton `update-rc.d create-fat-partition.sh defaults`.
+3. Create firstboot file `touch /opt/replay/firstboot`.
+4. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
+5. Create new image file from PC and remove unallocated space:
 
 ## Mount the Image File
-`sudo losetup -f --show replay_0370.img`
-Output: /dev/loop29
+`sudo losetup -f --show replay_0380.img`
+Output: /dev/loop33
 
 ## Examine the Partitions
-`sudo parted /dev/loop29 print`
+`sudo parted /dev/loop33 print`
 Output indicates the last partition ends at 4541MB.
 
 ## Unmount the Loop Device
-`sudo losetup -d /dev/loop29`
+`sudo losetup -d /dev/loop33`
 
 ## Truncate the Image File
-`truncate --size=4541MB replay_0370.img`
+`truncate --size=4541MB replay_0380.img`
 
 ## Compress
-`xz -k replay_0370.img`
+`xz -k replay_0380.img`
 
-ANALYZE SYSTEMD BOOT TIMES
-==========================
+MISC COMMAND NOTES
+==================
 ```
 systemd-analyze
 systemd-analyze critical-chain
 systemd-analyze blame
+
+update-rc.d create-fat-partition.sh defaults
+update-rc.d create-fat-partition.sh remove
+Check partition sectors: fdisk -l /dev/mmcblk0
 ```
