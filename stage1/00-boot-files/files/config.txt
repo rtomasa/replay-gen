@@ -25,17 +25,35 @@ arm_64bit=1
 # Disable compensation for displays with overscan
 disable_overscan=1
 
+[pi02]
+# Default
+# arm_freq=1000
+arm_freq=1100
+
 [pi3]
-# Default is 1200
+# Default
+# arm_freq=1200
 arm_freq=1300
 
 [pi3+]
-# Default is 1400
+# Default
+# arm_freq=1400
 arm_freq=1500
 
 [pi4]
-# Default is 1500 or 1800 depending on the revision
-arm_freq=1800
+# Default
+# arm_freq=1500 (Old)
+# arm_freq=1800 (New)
+# v3d_freq=500
+arm_freq=1900
+v3d_freq=560
+
+[pi400]
+# Default
+# arm_freq=1800
+# v3d_freq=500
+arm_freq=2100
+v3d_freq=560
 
 [cm4]
 # Enable host mode on the 2711 built-in XHCI USB controller.
@@ -44,8 +62,11 @@ arm_freq=1800
 otg_mode=1
 
 [pi5]
-# Default is 2400
-arm_freq=2800
+# Default
+# arm_freq=2400
+# v3d_freq=960
+arm_freq=2600
+v3d_freq=1000
 
 [all]
 dtoverlay=disable-bt

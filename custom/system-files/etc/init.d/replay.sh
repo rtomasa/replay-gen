@@ -11,6 +11,8 @@
 
 case "$1" in
     start)
+        echo 0 > /proc/sys/kernel/printk  # Set to show only emergency messages
+
         if [ -f /media/sd/replay ]; then
             mv -f /media/sd/replay /opt/replay
         fi
