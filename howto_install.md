@@ -30,7 +30,7 @@ Remove welcome message: `touch ~/.hushlogin`
 Remove linux version info: `echo "" > /etc/issue`
 Remove the message of the day: `echo "" > /etc/motd`
 Remove Kernel messages: `nano /etc/rc.local` comment out the IP print and add this before `exit 0`: `dmesg --console-off`
-Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 quiet loglevel=0 systemd.show_status=false rd.udev.log_level=0 rootwait fastboot cfg80211.ieee80211_regdom=ES usbhid.quirks=0x0ae4:0x0701:0x0004 usbhid.jspoll=1" > /boot/firmware/cmdline.txt`
+Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 quiet loglevel=0 systemd.show_status=false rd.udev.log_level=0 rootwait fastboot cfg80211.ieee80211_regdom=ES usbhid.quirks=0x0ae4:0x0701:0x0004 usbhid.jspoll=1 usbcore.autosuspend=-1" > /boot/firmware/cmdline.txt`
 `reboot`
 
 7. Remove AppArmor
@@ -109,8 +109,9 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 5. Make any required change, development, installation, etc. as needed.
 6. Enable the partiton `update-rc.d create-fat-partition.sh defaults`.
 7. Create firstboot file `touch /opt/replay/firstboot`.
-8. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
-9. Create new image file from PC and remove unallocated space:
+8. If kernel was updated you need replace manually. Example: `cp /boot/initrd.img-6.6.51+rpt-rpi-v8 /boot/firmware/initrd.img`.
+9. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`.
+10. Create new image file from PC and remove unallocated space:
 
 # New image creation phase
 1. Make release compilation of the frontend and clean all development files.
@@ -120,21 +121,37 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 5. Create new image file from PC and remove unallocated space:
 
 ## Mount the Image File
-`sudo losetup -f --show replay_0380.img`
-Output: /dev/loop33
+`sudo losetup -f --show replay_0410.img`
+Output: /dev/loop39
 
 ## Examine the Partitions
-`sudo parted /dev/loop33 print`
+`sudo parted /dev/loop39 print`
 Output indicates the last partition ends at 4541MB.
 
 ## Unmount the Loop Device
-`sudo losetup -d /dev/loop33`
+`sudo losetup -d /dev/loop39`
 
 ## Truncate the Image File
-`truncate --size=4541MB replay_0380.img`
+`truncate --size=4541MB replay_0410.img`
 
 ## Compress
-`xz -k replay_0380.img`
+`xz -k replay_0410.img`
+
+## Kernel Update
+### Check Installed Kernel Versions
+`dpkg --list | grep linux-image`
+ii: Installed package.
+rc: Package removed, but configuration files remain.
+### Remove Old Kernels
+`sudo apt remove linux-image-<version>`
+### Clean Up Dependencies
+`sudo apt autoremove --purge`
+### Verify and Regenerate Initramfs
+`sudo update-initramfs -u -k all`
+### Manually Copy New Kernel
+`cp /boot/vmlinuz-<version>-v8 /boot/firmware/kernel8.img`
+`cp /boot/initrd.img-<version>-v8 /boot/firmware/initrd.img`
+### Reboot
 
 MISC COMMAND NOTES
 ==================
