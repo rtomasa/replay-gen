@@ -102,40 +102,44 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 ===================================
 
 # Development phase
-1. Write latest image into SD.
-2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD bebore first boot.
-3. Boot the system and restore back the original partition script name `/etc/init.d/create-fat-partition.sh`.
-4. Disable the partiton service while doing development `update-rc.d create-fat-partition.sh remove`.
-5. Make any required change, package installation, etc. as needed.
-6. Make release compilation of the frontend and clean all development files.
-7. Enable the partiton `update-rc.d create-fat-partition.sh defaults`.
-8. Create firstboot file `touch /opt/replay/firstboot`.
-9. If kernel was updated:
-    1. Replace manually. Example: `cp /boot/initrd.img-6.6.51+rpt-rpi-v8 /boot/firmware/initrd.img`.
-    2. Fix System.map: `ln -s /boot/System.map-$(uname -r) /usr/src/linux-headers-$(uname -r)/System.map`
-    3. Install driver support for TAITO Paddle & Trackball
-    4. Install driver support for NAMCO GunCon 2 Lightgun
-10. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`.
+1. Write latest image into SD
+2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD bebore first boot
+3. Perform a system update (not upgrade)
+4. Copy config.txt and cmdline.txt if required
+5. Make any required package installation
+6. Make Kernel upgrade if required (instructions down below)
+    1. Replace new Kernel manually. Example: `cp /boot/initrd.img-6.6.51+rpt-rpi-v8 /boot/firmware/initrd.img`
+    2. Reboot
+    3. Fix System.map: `ln -s /boot/System.map-$(uname -r) /usr/src/linux-headers-$(uname -r)/System.map`
+    4. Install TAITO Paddle & Trackball driver
+    5. Install NAMCO GunCon 2 Lightgun driver
+    6. Install GPIO Joystick driver
+    7. Copy GPIO Joystick dtbo
+7. Make release compilation of the frontend and clean all development files
+8. Restore back the original partition script name `/etc/init.d/create-fat-partition.sh`
+9. Create firstboot file `touch /opt/replay/firstboot`
+10. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
 11. Create new image file from PC and remove unallocated space:
+
+**NOTE**: the below image preparation steps are automated in replay_img.sh
 
 ## Mount the Image File
 `sudo losetup -f --show replay_0410.img`
 Output: /dev/loop39
-
 ## Examine the Partitions
 `sudo parted /dev/loop39 print`
-Output indicates the last partition ends at 4541MB.
-
+Output indicates the last partition ends at 4541MB
 ## Unmount the Loop Device
 `sudo losetup -d /dev/loop39`
-
 ## Truncate the Image File
 `truncate --size=4541MB replay_0410.img`
-
 ## Compress
 `xz -k replay_0410.img`
 
 ## Kernel Update
+### Update system
+`apt update`
+`apt upgrade`
 ### Check Installed Kernel Versions
 `dpkg --list | grep linux-image`
 ii: Installed package.
