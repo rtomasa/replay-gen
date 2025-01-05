@@ -106,19 +106,17 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD bebore first boot.
 3. Boot the system and restore back the original partition script name `/etc/init.d/create-fat-partition.sh`.
 4. Disable the partiton service while doing development `update-rc.d create-fat-partition.sh remove`.
-5. Make any required change, development, installation, etc. as needed.
-6. Enable the partiton `update-rc.d create-fat-partition.sh defaults`.
-7. Create firstboot file `touch /opt/replay/firstboot`.
-8. If kernel was updated you need replace manually. Example: `cp /boot/initrd.img-6.6.51+rpt-rpi-v8 /boot/firmware/initrd.img`.
-9. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`.
-10. Create new image file from PC and remove unallocated space:
-
-# New image creation phase
-1. Make release compilation of the frontend and clean all development files.
-2. Enable the partiton `update-rc.d create-fat-partition.sh defaults`.
-3. Create firstboot file `touch /opt/replay/firstboot`.
-4. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
-5. Create new image file from PC and remove unallocated space:
+5. Make any required change, package installation, etc. as needed.
+6. Make release compilation of the frontend and clean all development files.
+7. Enable the partiton `update-rc.d create-fat-partition.sh defaults`.
+8. Create firstboot file `touch /opt/replay/firstboot`.
+9. If kernel was updated:
+    1. Replace manually. Example: `cp /boot/initrd.img-6.6.51+rpt-rpi-v8 /boot/firmware/initrd.img`.
+    2. Fix System.map: `ln -s /boot/System.map-$(uname -r) /usr/src/linux-headers-$(uname -r)/System.map`
+    3. Install driver support for TAITO Paddle & Trackball
+    4. Install driver support for NAMCO GunCon 2 Lightgun
+10. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`.
+11. Create new image file from PC and remove unallocated space:
 
 ## Mount the Image File
 `sudo losetup -f --show replay_0410.img`
