@@ -6,7 +6,7 @@ kernel=kernel8.img
 #dtparam=i2s=on
 
 # Enable audio (loads snd_bcm2835)
-dtparam=audio=on
+dtparam=audio=off
 
 # Automatically load initramfs files, if found
 auto_initramfs=1
@@ -66,7 +66,8 @@ otg_mode=1
 # arm_freq=2400
 # v3d_freq=960
 arm_freq=2600
-v3d_freq=1000
+v3d_freq=1060
+#dtoverlay=gpio-joystick
 
 [all]
 dtoverlay=disable-bt
