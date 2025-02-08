@@ -104,7 +104,7 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 # Development phase
 1. Write latest image into SD
 2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD bebore first boot
-3. Perform a system update (not upgrade)
+3. Boot the system and perform a system update (not upgrade)
 4. Copy config.txt and cmdline.txt if required
 5. Make any required package installation
 6. Make Kernel upgrade if required (instructions down below)
@@ -116,10 +116,11 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
     6. Install GPIO Joystick driver
     7. Copy GPIO Joystick dtbo
 7. Make release compilation of the frontend and clean all development files
-8. Restore back the original partition script name `/etc/init.d/create-fat-partition.sh`
-9. Create firstboot file `touch /opt/replay/firstboot`
-10. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
-11. Create new image file from PC and remove unallocated space:
+8. Copy any other required or modified file like for example sdl controller db, etc.
+9. Restore back the original partition script name `/etc/init.d/create-fat-partition.sh`
+10. Create firstboot file `touch /opt/replay/firstboot`
+11. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
+12. Create new image file from PC and remove unallocated space:
 
 **NOTE**: the below image preparation steps are automated in replay_img.sh
 
