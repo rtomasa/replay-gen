@@ -4,30 +4,22 @@
 # Required-Start:    $all
 # Required-Stop:
 # Default-Start:      5
-# Default-Stop:
+# Default-Stop:       0 1 6
 # Short-Description: Starts RePlay frontend
 # Description:
 ### END INIT INFO
 
 case "$1" in
     start)
-        echo 0 > /proc/sys/kernel/printk  # Set to show only emergency messages
-
+    	echo 0 > /proc/sys/kernel/printk  # Set to show only emergency messages
+    	
         if [ -f /media/sd/replay ]; then
             mv -f /media/sd/replay /opt/replay
         fi
         cd /opt/replay || exit 1
 
         # Autoreload on crash
-        while true; do
-            /opt/replay/replay
-            RETVAL=$?
-            if [ $RETVAL -ne 0 ]; then
-                sleep 2  # Optional: Add a delay before restarting
-            else
-                break
-            fi
-        done
+        /opt/replay/replay
         ;;
     
     stop)

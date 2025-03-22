@@ -119,7 +119,7 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 8. Copy any other required or modified file like for example sdl controller db, etc.
 9. Restore back the original partition script name `/etc/init.d/create-fat-partition.sh`
 10. Create firstboot file `touch /opt/replay/firstboot`
-11. Clean history and shutdown system `cat /dev/null > ~/.bash_history && history -c && poweroff`
+11. Clean history and shutdown system `rm -f ~/.bash_history* && history -c && poweroff`
 12. Create new image file from PC and remove unallocated space:
 
 **NOTE**: the below image preparation steps are automated in replay_img.sh
