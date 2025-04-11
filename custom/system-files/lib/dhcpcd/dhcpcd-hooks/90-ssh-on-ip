@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "$reason" in
+    BOUND|RENEW|REBIND|REBOOT)
+        logger "DHCP assigned IP to $interface — starting SSH"
+        systemctl start ssh
+        ;;
+    EXPIRE|FAIL|RELEASE|STOP|NOCARRIER)
+        logger "DHCP lost IP on $interface — stopping SSH"
+        systemctl stop ssh
+        ;;
+esac

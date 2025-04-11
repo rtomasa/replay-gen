@@ -44,7 +44,7 @@ case "$1" in
 	# Remove this script to prevent from executing it again and enable frontend
 	update-rc.d create-fat-partition.sh remove &&
 	rm /etc/init.d/create-fat-partition.sh
-	update-rc.d replay.sh defaults
+	systemctl enable replay.service
 	
 	# Reboot the system
 	echo "Rebooting system to apply partition changes..."

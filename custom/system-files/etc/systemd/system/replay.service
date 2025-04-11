@@ -1,0 +1,24 @@
+[Unit]
+Description=RePlay Frontend
+DefaultDependencies=no
+
+# We'll wait until local file systems are mounted, so /opt is available
+After=local-fs.target
+Wants=local-fs.target
+
+# We start in the "basic" phase, which is right after sysinit.target
+Before=basic.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/replay
+ExecStart=/opt/replay/replay
+TimeoutSec=20
+Restart=always
+RestartSec=2
+
+# If the program never exits and you want the service to remain 'active':
+RemainAfterExit=yes
+
+[Install]
+WantedBy=basic.target

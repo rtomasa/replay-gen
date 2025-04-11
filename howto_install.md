@@ -90,7 +90,7 @@ Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D con
 `update-rc.d create-fat-partition.sh defaults`
 
 20. Copy replay service
-`cp replay.sh /etc/init.d/replay.sh`
+`cp replay.service /etc/systemd/system/replay.service`
 
 21. Copy replay folder to /opt
 
@@ -101,9 +101,41 @@ Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D con
 DEVELOP AND CREATE NEW SYSTEM IMAGE
 ===================================
 
+```
+    ## Files for next ISO
+
+    - [X] Core PiBench
+    - [X] /lib/dhcpcd/dhcpcd-hooks/90-ssh-on-ip
+    - [X] /etc/systemd/system/replay.service
+    - [X] /etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf
+    - [X] /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+    - [X] /boot/firmware/config.txt
+    - [X] !!! delete /etc/init.d/replay.sh
+
+    Execute:
+    - [X] $ apt-get update
+    - [X] $ apt-get install dhcpcd5
+    - [X] $ systemctl disable NetworkManager
+    - [X] $ systemctl disable ModemManager
+    - [X] $ systemctl enable dhcpcd
+    - [X] $ systemctl disable rpi-eeprom-update
+    - [X] $ systemctl disable avahi-daemon
+    - [X] $ systemctl disable networking
+
+    - [X] $ systemctl disable replay.service
+    - [X] $ rm /etc/init.d/replay.sh
+    - [X] copy /etc/systemd/system/replay.service
+    - [X] $ systemctl daemon-reload
+    - [X] $ systemctl enable replay.service
+
+    - [X] copy template file /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+    - [X] $ systemctl enable wpa_supplicant@wlan0
+    - [X] $ systemctl start wpa_supplicant@wlan0
+```
+
 # Development phase
 1. Write latest image into SD
-2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD bebore first boot
+2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD before first boot
 3. Boot the system and perform a system update (not upgrade)
 4. Copy config.txt and cmdline.txt if required
 5. Make any required package installation

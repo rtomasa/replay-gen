@@ -73,3 +73,5 @@ v3d_freq=1060
 dtoverlay=disable-bt
 disable_splash=1
 force_turbo=1
+force_eeprom_read=0
+os_check=0
