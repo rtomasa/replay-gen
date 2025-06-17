@@ -9,7 +9,7 @@ kernel=kernel8.img
 dtparam=audio=off
 
 # Automatically load initramfs files, if found
-auto_initramfs=1
+#auto_initramfs=1
 
 # Enable DRM VC4 V3D driver
 dtoverlay=vc4-kms-v3d
@@ -26,32 +26,37 @@ arm_64bit=1
 disable_overscan=1
 
 [pi02]
-# Default
+# Default:
 # arm_freq=1000
-arm_freq=1100
+# Stable overclock:
+# arm_freq=1100
 
 [pi3]
-# Default
+# Default:
 # arm_freq=1200
-arm_freq=1300
+# Stable overclock:
+# arm_freq=1300
 
 [pi3+]
-# Default
+# Default:
 # arm_freq=1400
-arm_freq=1500
+# Stable overclock:
+# arm_freq=1500
 
 [pi4]
-# Default
-# arm_freq=1500 (Old)
-# arm_freq=1800 (New)
+# Default:
+# arm_freq=1500 (Old model)
+# arm_freq=1800 (New model)
 # v3d_freq=500
+# Stable overclock:
 arm_freq=1900
 v3d_freq=560
 
 [pi400]
-# Default
+# Default:
 # arm_freq=1800
 # v3d_freq=500
+# Stable overclock:
 arm_freq=2100
 v3d_freq=560
 
@@ -62,9 +67,10 @@ v3d_freq=560
 otg_mode=1
 
 [pi5]
-# Default
+# Default:
 # arm_freq=2400
 # v3d_freq=960
+# Stable overclock:
 arm_freq=2600
 v3d_freq=1060
 #dtoverlay=gpio-joystick

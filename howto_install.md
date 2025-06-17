@@ -34,7 +34,6 @@ Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D con
 `reboot`
 
 7. Remove AppArmor
-`systemctl stop apparmor`
 `systemctl disable apparmor`
 `apt-get remove --purge apparmor`
 `rm -rf /etc/apparmor.d/`
@@ -46,91 +45,111 @@ Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D con
 `apt-get remove --purge sudo`
 
 10. Remove triggerhappy
-`systemctl stop triggerhappy`
 `systemctl disable triggerhappy`
 `apt-get remove --purge triggerhappy`
 
 11. Remove raspi-config
-`service raspi-config stop`
 `update-rc.d raspi-config remove`
 `apt-get remove --purge raspi-config`
 
 12. Disable NetworkManager-wait-online
-`systemctl stop NetworkManager-wait-online.service`
 `systemctl disable NetworkManager-wait-online.service`
 `systemctl mask NetworkManager-wait-online.service`
 
 13. Disable e2scrub_reap.service
-`systemctl stop e2scrub_reap.service`
 `systemctl disable e2scrub_reap.service`
 `systemctl mask e2scrub_reap.service`
-`systemctl stop e2scrub_all.timer`
 `systemctl disable e2scrub_all.timer`
 `systemctl mask e2scrub_all.timer`
 
 14. Remove udisks2.service
-`systemctl stop udisks2.service`
 `systemctl disable udisks2.service`
 `apt-get remove --purge udisks2`
 
 15. Remove getty
-`systemctl stop getty@tty1.service`
 `systemctl disable getty@tty1.service`
 
-16. Create mount points
+16. Remove ModemManager
+`systemctl disable ModemManager`
+
+17. Enable dhcpcd
+`systemctl enable dhcpcd`
+
+18. Disable rpi-eeprom-update
+`systemctl disable rpi-eeprom-update`
+
+19. Remove avahi-daemon
+`systemctl disable avahi-daemon`
+
+20. Remove networking
+`systemctl disable networking`
+
+21. Enable wpa_supplicant@wlan0
+`systemctl enable wpa_supplicant@wlan0`
+
+22. Create mount points
 `mkdir /media/sd`
 `mkdir /media/usb`
 `mkdir /media/nfs`
 
-17. Build and install GunGon2 driver
-18. Build and install Tatito T&P driver
+23. Build and install GunGon2 driver
+24. Build and install Tatito T&P driver
 
-19. Install create-fat-partition service
+25. Install create-fat-partition service
 `cp create-fat-partition.sh /etc/init.d/create-fat-partition.sh`
 `update-rc.d create-fat-partition.sh defaults`
 
-20. Copy replay service
+26. Copy replay service
 `cp replay.service /etc/systemd/system/replay.service`
 
-21. Copy replay folder to /opt
+27. Copy replay folder to /opt
 
-22. Clear history
+28. Clear history
 `history -c`
 `cat /dev/null > ~/.bash_history && history -c && poweroff`
 
 DEVELOP AND CREATE NEW SYSTEM IMAGE
 ===================================
 
-```
-    ## Files for next ISO
+``` sh
 
-    - [X] Core PiBench
-    - [X] /lib/dhcpcd/dhcpcd-hooks/90-ssh-on-ip
-    - [X] /etc/systemd/system/replay.service
-    - [X] /etc/sysctl.d/99-sysctl.conf -> /etc/sysctl.conf
-    - [X] /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-    - [X] /boot/firmware/config.txt
-    - [X] !!! delete /etc/init.d/replay.sh
+# Remove development libraries
+apt purge gdb build-essential alsa-utils joystick \
+libgles-dev libegl-dev libdrm-dev libgbm-dev \
+libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev \
+libavcodec-dev libavformat-dev libswscale-dev libavutil-dev \
+libsamplerate0-dev libinput-dev libass-dev \
+libcurl4-openssl-dev libblkid-dev libcjson-dev libgpiod-dev \
+zlib1g-dev libbsd-dev
 
-    Execute:
-    - [X] $ apt-get update
-    - [X] $ apt-get install dhcpcd5
-    - [X] $ systemctl disable NetworkManager
-    - [X] $ systemctl disable ModemManager
-    - [X] $ systemctl enable dhcpcd
-    - [X] $ systemctl disable rpi-eeprom-update
-    - [X] $ systemctl disable avahi-daemon
-    - [X] $ systemctl disable networking
+# Install runtime libraries
+apt install --no-install-recommends \
+libgles2 libegl1 libdrm2 libgbm1 \
+libsdl2-2.0-0 libsdl2-image-2.0-0 libsdl2-gfx-1.0-0 \
+libavcodec59 libavformat59 libswscale6 libavutil57 \
+libsamplerate0 libinput10 libass9 \
+libcurl4 libblkid1 libcjson1 libgpiod2 \
+zlib1g libbsd0
 
-    - [X] $ systemctl disable replay.service
-    - [X] $ rm /etc/init.d/replay.sh
-    - [X] copy /etc/systemd/system/replay.service
-    - [X] $ systemctl daemon-reload
-    - [X] $ systemctl enable replay.service
+# Put logs in RAM
+echo "deb [signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packages.azlux.fr/debian/ bookworm main" | sudo tee /etc/apt/sources.list.d/azlux.list
+wget -O /usr/share/keyrings/azlux-archive-keyring.gpg  https://azlux.fr/repo.gpg
+apt update
+apt install log2ram
 
-    - [X] copy template file /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
-    - [X] $ systemctl enable wpa_supplicant@wlan0
-    - [X] $ systemctl start wpa_supplicant@wlan0
+# Disable the swapfile	
+dphys-swapfile swapoff
+systemctl disable dphys-swapfile
+rm /var/swap
+apt install zram-tools
+
+# Change locale
+sudo nano /etc/locale.gen
+Uncomment # en_US.UTF-8 UTF-8
+sudo locale-gen
+sudo update-locale LANG=en_US.UTF-8
+
+
 ```
 
 # Development phase
@@ -140,9 +159,8 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 4. Copy config.txt and cmdline.txt if required
 5. Make any required package installation
 6. Make Kernel upgrade if required (instructions down below)
-    1. Replace new Kernel manually. Example: `cp /boot/initrd.img-6.6.51+rpt-rpi-v8 /boot/firmware/initrd.img`
-    2. Reboot
-    3. Fix System.map: `ln -s /boot/System.map-$(uname -r) /usr/src/linux-headers-$(uname -r)/System.map`
+    1. Check installed Kernels: `dpkg -l 'linux-image-*' | grep '^ii'`
+    2. Remove old Kernels: `apt-get purge linux-image-$(uname -r)`
     4. Install TAITO Paddle & Trackball driver
     5. Install NAMCO GunCon 2 Lightgun driver
     6. Install GPIO Joystick driver
@@ -151,7 +169,20 @@ DEVELOP AND CREATE NEW SYSTEM IMAGE
 8. Copy any other required or modified file like for example sdl controller db, etc.
 9. Restore back the original partition script name `/etc/init.d/create-fat-partition.sh`
 10. Create firstboot file `touch /opt/replay/firstboot`
-11. Clean history and shutdown system `rm -f ~/.bash_history* && history -c && poweroff`
+11. Cleanup and shutdown:
+    Check for installed packages and kernels: `dpkg --get-selections | awk '{print $1}' | sort > ~/pkgs_current.txt`
+    Remove old kernels based on the above list: `apt purge <kernel_package>`
+    Remove some packages: `apt remove sudo python3`
+    ```sh
+    rm -f /var/log/replay.log \
+    && rm -rf /tmp/* /var/tmp/* /var/log/* \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && apt-get autoclean \
+    && rm -f ~/.bash_history* \
+    && history -c \
+    && poweroff
+    ```
 12. Create new image file from PC and remove unallocated space:
 
 **NOTE**: the below image preparation steps are automated in replay_img.sh

@@ -39,7 +39,7 @@ case "$1" in
 	mkfs.vfat -F 32 -n "replay" $NEW_PARTITION
 
 	# Add new partition to fstab
-	echo "/dev/mmcblk0p3        /media/sd       vfat    rw,sync,dirsync,noatime,nodiratime,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro   0   0" | tee -a /etc/fstab
+	echo "/dev/mmcblk0p3        /media/sd       vfat    rw,noatime,nodiratime,fmask=0022,dmask=0022,iocharset=utf8,errors=remount-ro   0   0" | tee -a /etc/fstab
 	
 	# Remove this script to prevent from executing it again and enable frontend
 	update-rc.d create-fat-partition.sh remove &&

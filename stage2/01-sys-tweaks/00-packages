@@ -24,4 +24,6 @@ udisks2
 unzip zip
 file
 kms++-utils
-libgles-dev libegl-dev libdrm-dev libgbm-dev libsdl2-dev libsdl2-image-dev alsa-utils libavcodec-dev libavformat-dev libswscale-dev libavutil-dev libsamplerate0-dev libinput-dev libass-dev libsdl2-gfx-dev libcurl4-openssl-dev libcjson-dev
+alsa-utils joystick libgles-dev libegl-dev libdrm-dev libgbm-dev libsdl2-dev libsdl2-image-dev libsdl2-gfx-dev libavcodec-dev libavformat-dev libswscale-dev libavutil-dev libsamplerate0-dev libinput-dev libass-dev libcurl4-openssl-dev libblkid-dev libcjson-dev libgpiod-dev zlib1g-dev libbsd-dev
+libgles2 libegl1 libdrm2 libgbm1 libsdl2-2.0-0 libsdl2-image-2.0-0 libsdl2-gfx-1.0-0 libavcodec59 libavformat59 libswscale6 libavutil57 libsamplerate0 libinput10 libass9 libcurl4 libblkid1 libcjson1 libgpiod2 zlib1g libbsd0
+dhcpcd5
