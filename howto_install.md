@@ -30,7 +30,7 @@ Remove welcome message: `touch ~/.hushlogin`
 Remove linux version info: `echo "" > /etc/issue`
 Remove the message of the day: `echo "" > /etc/motd`
 Remove Kernel messages: `nano /etc/rc.local` comment out the IP print and add this before `exit 0`: `dmesg --console-off`
-Update cmdline.txt: `video=HDMI-A-1:1280x720@60D video=HDMI-A-2:1280x720@60D console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 quiet loglevel=0 systemd.show_status=false rd.udev.log_level=0 rootwait fastboot cfg80211.ieee80211_regdom=ES usbhid.quirks=0x0ae4:0x0701:0x0004 usbhid.jspoll=1 usbcore.autosuspend=-1" > /boot/firmware/cmdline.txt`
+Update cmdline.txt: `console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repair=no vt.global_cursor_default=0 quiet loglevel=0 systemd.show_status=false rd.udev.log_level=0 rootwait fastboot cfg80211.ieee80211_regdom=ES usbhid.quirks=0x0ae4:0x0701:0x0004 usbhid.jspoll=1 usbcore.autosuspend=-1" > /boot/firmware/cmdline.txt`
 `reboot`
 
 7. Remove AppArmor
@@ -155,12 +155,12 @@ sudo update-locale LANG=en_US.UTF-8
 # Development phase
 1. Write latest image into SD
 2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD before first boot
-3. Boot the system and perform a system update (not upgrade)
+3. Boot the system and perform a system update `apt update && apt full-upgrade -y && apt autoremove -y --purge && apt clean`
 4. Copy config.txt and cmdline.txt if required
 5. Make any required package installation
 6. Make Kernel upgrade if required (instructions down below)
     1. Check installed Kernels: `dpkg -l 'linux-image-*' | grep '^ii'`
-    2. Remove old Kernels: `apt-get purge linux-image-$(uname -r)`
+    2. Remove old Kernels: `apt-get purge linux-image-6.12.25*`
     4. Install TAITO Paddle & Trackball driver
     5. Install NAMCO GunCon 2 Lightgun driver
     6. Install GPIO Joystick driver
