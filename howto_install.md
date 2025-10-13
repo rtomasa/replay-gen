@@ -95,9 +95,9 @@ Update cmdline.txt: `console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 fsck.repai
 23. Build and install GunGon2 driver
 24. Build and install Tatito T&P driver
 
-25. Install create-fat-partition service
-`cp create-fat-partition.sh /etc/init.d/create-fat-partition.sh`
-`update-rc.d create-fat-partition.sh defaults`
+25. Install create-exfat-partition service
+`cp create-exfat-partition.sh /etc/init.d/create-exfat-partition.sh`
+`update-rc.d create-exfat-partition.sh defaults`
 
 26. Copy replay service
 `cp replay.service /etc/systemd/system/replay.service`
@@ -152,22 +152,45 @@ sudo update-locale LANG=en_US.UTF-8
 
 ```
 
+<!--
+- [X] update + full-upgrade
+- [X] delete gpio driver + config.txt + overlay
+- [X] Resize root partition
+    sudo umount /dev/sda2
+    echo ",+6291456" | sudo sfdisk --force -N 2 /dev/sda
+    sudo partprobe /dev/sda
+    sudo fdisk -l /dev/sda | grep sda2
+    sudo e2fsck -f /dev/sda2
+    sudo resize2fs /dev/sda2
+- [X] Change SD to exFAT
+    apt install exfatprogs
+    update-rc.d -f create-fat-partition.sh remove
+    rm /etc/init.d/create-fat-partition.sh
+    cp create-exfat-partition.sh /etc/init.d
+    chmod +x create-exfat-partition.sh
+- [X] Clean
+    apt purge linux-headers-6.12.34*
+    apt purge linux-image-6.12.34*
+    apt update && apt full-upgrade -y && apt autoremove -y --purge && apt clean
+    rm -f /var/log/replay.log \
+        && rm -rf /tmp/* /var/tmp/* /var/log/* \
+        && apt-get -y autoremove \
+        && apt-get clean \
+        && apt-get autoclean \
+        && rm -f ~/.bash_history* \
+        && history -c \
+        && poweroff
+-->
+
 # Development phase
 1. Write latest image into SD
-2. Prevent partition script to run renaming `/etc/init.d/create-fat-partition.sh` directly in the SD before first boot
+2. Prevent partition script to run renaming `/etc/init.d/create-exfat-partition.sh` directly in the SD before first boot
 3. Boot the system and perform a system update `apt update && apt full-upgrade -y && apt autoremove -y --purge && apt clean`
 4. Copy config.txt and cmdline.txt if required
 5. Make any required package installation
-6. Make Kernel upgrade if required (instructions down below)
-    1. Check installed Kernels: `dpkg -l 'linux-image-*' | grep '^ii'`
-    2. Remove old Kernels: `apt-get purge linux-image-6.12.25*`
-    4. Install TAITO Paddle & Trackball driver
-    5. Install NAMCO GunCon 2 Lightgun driver
-    6. Install GPIO Joystick driver
-    7. Copy GPIO Joystick dtbo
 7. Make release compilation of the frontend and clean all development files
 8. Copy any other required or modified file like for example sdl controller db, etc.
-9. Restore back the original partition script name `/etc/init.d/create-fat-partition.sh`
+9. Restore back the original partition script name `/etc/init.d/create-exfat-partition.sh`
 10. Create firstboot file `touch /opt/replay/firstboot`
 11. Cleanup and shutdown:
     Check for installed packages and kernels: `dpkg --get-selections | awk '{print $1}' | sort > ~/pkgs_current.txt`
@@ -226,8 +249,8 @@ systemd-analyze
 systemd-analyze critical-chain
 systemd-analyze blame
 
-update-rc.d create-fat-partition.sh defaults
-update-rc.d create-fat-partition.sh remove
+update-rc.d create-exfat-partition.sh defaults
+update-rc.d create-exfat-partition.sh remove
 Check partition sectors: fdisk -l /dev/mmcblk0
 ```
 
