@@ -156,12 +156,21 @@ sudo update-locale LANG=en_US.UTF-8
 - [X] update + full-upgrade
 - [X] delete gpio driver + config.txt + overlay
 - [X] Resize root partition
-    sudo umount /dev/sda2
-    echo ",+6291456" | sudo sfdisk --force -N 2 /dev/sda
+    # Current development SD: /dev/sda (29.5 GiB), rootfs: /dev/sda2 (6.7 GiB)
+    # Set rootfs to 12 GiB. Leave the remaining space unallocated so the
+    # first-boot script can create the exFAT partition on the target SD card.
+    lsblk -o NAME,SIZE,MODEL,SERIAL,FSTYPE,MOUNTPOINTS /dev/sda
+    sudo umount /dev/sda1 /dev/sda2
+    sudo sfdisk --dump /dev/sda > replay-partitions-before-resize.sfdisk
+    sudo e2fsck -f /dev/sda2
+    printf ',12GiB\n' | sudo sfdisk --lock --force -N 2 /dev/sda
     sudo partprobe /dev/sda
-    sudo fdisk -l /dev/sda | grep sda2
+    sudo sfdisk --dump /dev/sda
+    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS /dev/sda
     sudo e2fsck -f /dev/sda2
     sudo resize2fs /dev/sda2
+    # Verify that /dev/sda2 is 12 GiB and no partition 3 exists yet.
+    lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINTS /dev/sda
 - [X] Change SD to exFAT
     apt install exfatprogs
     update-rc.d -f create-fat-partition.sh remove
@@ -195,7 +204,6 @@ sudo update-locale LANG=en_US.UTF-8
 11. Cleanup and shutdown:
     Check for installed packages and kernels: `dpkg --get-selections | awk '{print $1}' | sort > ~/pkgs_current.txt`
     Remove old kernels based on the above list: `apt purge <kernel_package>`
-    Remove some packages: `apt remove sudo python3`
     ```sh
     rm -f /var/log/replay.log \
     && rm -rf /tmp/* /var/tmp/* /var/log/* \
